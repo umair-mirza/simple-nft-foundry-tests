@@ -40,5 +40,14 @@ contract MockSimpleNftTest is Test {
         assertEq(simpleNft.balanceOf(userOne), 1);
     }
 
+    //No more than 5 tokens can be minted in a single transaction
+    function testFailBatchMint() public {
+        vm.startPrank(userOne);
+        vm.deal(userOne, 1 ether);
+        
+        simpleNft.mintMultipleNfts{value: 1 ether}(6);
+        vm.stopPrank();
+        assertEq(simpleNft.balanceOf(userOne), 6);
+    }
 
 }
