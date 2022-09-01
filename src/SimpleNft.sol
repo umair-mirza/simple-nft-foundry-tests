@@ -5,11 +5,11 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NFT is ERC721URIStorage, Ownable {
+contract SimpleNft is ERC721URIStorage, Ownable {
 
     string public constant TOKEN_URI = "ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4/?filename=0-PUG.json";
 
-    uint256 private s_tokenCounter;
+    uint256 public s_tokenCounter;
 
     mapping(uint256 => string) private s_tokenURIs;
 
@@ -54,7 +54,7 @@ contract NFT is ERC721URIStorage, Ownable {
     }
 
     function tokenURI(uint256 tokenId) public view override returns(string memory) {
-        return s__tokenURIs[tokenId];
+        return s_tokenURIs[tokenId];
     }
 
     function getTokenCounter() public view returns (uint256) {
