@@ -6,19 +6,17 @@ import "forge-std/Test.sol";
 import "../src/mocks/MockSimpleNft.sol";
 
 contract MockSimpleNftTest is Test {
-    SimpleNft public simpleNft;
+    MockSimpleNft public simpleNft;
     ERC721 public token;
 
     address owner = address(0x1234);
     address userOne = address(0x1122);
 
-    uint256 private s_tokenCounter = 1000;
-    uint public MAX_SUPPLY = 100;
 
     //Setup Function
     function setUp() public {
         vm.startPrank(owner);
-        simpleNft = new SimpleNft();
+        simpleNft = new MockSimpleNft();
         vm.stopPrank(); 
     }
 
@@ -33,14 +31,13 @@ contract MockSimpleNftTest is Test {
     }
 
     //No more than 100 tokens can be minted
-    function testMaxMint() public {
+    function testFailMaxMint() public {
         vm.startPrank(userOne);
         vm.deal(userOne, 2 ether);
-
+        simpleNft.newTokenCounter();
         simpleNft.mintNft{value: 0.01 ether}();
         vm.stopPrank();
         assertEq(simpleNft.balanceOf(userOne), 1);
-
     }
 
 
