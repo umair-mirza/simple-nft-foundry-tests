@@ -5,7 +5,14 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/// @title A Simple NFT contract with Batch Mint functionality
+/// @author Umair Mirza
+/// @notice This contract is for creating an ERC-721 NFT contract
+/// @dev This contract implements Single NFT mint, Batch NFT mint and Owner withdraw functionality
+
 contract SimpleNft is ERC721URIStorage, Ownable {
+
+    /* State Variables */
 
     string public constant TOKEN_URI = "ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4/?filename=0-PUG.json";
 
@@ -19,10 +26,17 @@ contract SimpleNft is ERC721URIStorage, Ownable {
 
     uint public constant MAX_PER_MINT = 5;
 
+    /// @notice This is the Constructor function which sets the NFT token counter to Zero
+    /// @notice The contructor function of the NFT contract does not take any arguments
+    /// @dev The ERC721 contract constructor takes 2 argumments, Name of the token and the Symbol
+
     constructor() ERC721("Dogie", "DOG") {
         s_tokenCounter = 0;
     }
 
+    /// @notice This function can be used to mint multiple NFTs in a single Request.
+    /// @notice Currently max of 5 NFTs are allowed per mint
+    /// @dev The function takes one argument which is the count of the number of NFTs to be minted
     function mintMultipleNfts(uint256 _count) public payable {
         uint256 totalMinted = s_tokenCounter;
         
@@ -36,6 +50,8 @@ contract SimpleNft is ERC721URIStorage, Ownable {
 
     }
 
+    /// @notice This function is meant for minting a single NFT
+    /// @notice User wont be able to mint an NFT if the MAX supply has been reached
     function mintNft() public payable returns (uint256) {
         require(msg.value >= MINT_PRICE, "Not enough funds");
         require(s_tokenCounter < MAX_SUPPLY, "Max supply reached");
@@ -46,12 +62,16 @@ contract SimpleNft is ERC721URIStorage, Ownable {
         return s_tokenCounter; //Token counter is the unique tokenId of each NFT in an NFT collection
     }
 
+    /// @notice This is the withdraw function that can be used to withdraw the collected amount from NFT sales
+    /// @notice Only the owner of the contract can withdraw the amount
     function withdraw() public payable onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "Balance is Zero");
         (bool success, ) = (msg.sender).call{value: balance}("");
         require(success, "Transfer failed");
     }
+
+    /* Getter Functions */
 
     function tokenURI(uint256 tokenId) public view override returns(string memory) {
         return s_tokenURIs[tokenId];
