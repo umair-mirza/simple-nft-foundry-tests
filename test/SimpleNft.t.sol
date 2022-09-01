@@ -50,4 +50,44 @@ contract MockSimpleNftTest is Test {
         assertEq(simpleNft.balanceOf(userOne), 6);
     }
 
+    //Owner can withdraw the funds collected from sale
+    function testWithdraw() public {
+
+        //first mint 5 NFTs via userOne
+        vm.startPrank(userOne);
+        vm.deal(userOne, 1 ether);
+        
+        simpleNft.mintMultipleNfts{value: 0.05 ether}(5);
+        assertEq(simpleNft.balanceOf(userOne), 5);
+        vm.stopPrank();
+        // assertEq(simpleNft.balanceOf(owner), 0);
+
+        //now verify the withdraw method by signing in the owner
+        vm.startPrank(owner);
+        simpleNft.withdraw();
+        vm.stopPrank();
+        assertEq(owner.balance, 0.05 ether);
+    }
+
+    //You can mint one token provided the correct amount of ETH
+    function testMineOne() public {
+        vm.startPrank(userOne);
+        vm.deal(userOne, 0.01 ether);
+
+        simpleNft.mintMultipleNfts{value: 0.01 ether}(1);
+        assertEq(simpleNft.balanceOf(userOne), 1);
+        vm.stopPrank();
+    }
+
+    //You can mint three tokens provided the correct amount of ETH
+    //Check the balance of an account that has minted three tokens
+    function testMintThree() public {
+        vm.startPrank(userOne);
+        vm.deal(userOne, 0.03 ether);
+
+        simpleNft.mintMultipleNfts{value: 0.03 ether}(3);
+        assertEq(simpleNft.balanceOf(userOne), 3);
+        vm.stopPrank();
+    }
+
 }
