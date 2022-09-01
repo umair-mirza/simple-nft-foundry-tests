@@ -20,6 +20,16 @@ contract MockSimpleNftTest is Test {
         vm.stopPrank(); 
     }
 
+    //Contract is deployed successfully and Mint is working
+    function testDeployMint() public {
+        vm.startPrank(userOne);
+        vm.deal(userOne, 0.01 ether);
+
+        simpleNft.mintNft{value: 0.01 ether}();
+        assertEq(simpleNft.balanceOf(userOne), 1);
+        vm.stopPrank();
+    }
+
     //A token can not be minted if less value than cost (0.01) is provided
     function testFailMint() public {
         vm.startPrank(userOne);
